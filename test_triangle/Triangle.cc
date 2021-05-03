@@ -5,8 +5,8 @@
 
 int Triangle::init()
 {
-    FileReader fileVert("../test/triangle.vert");
-    FileReader fileFrag("../test/triangle.frag");
+    FileReader fileVert("../test_triangle/shader.vert");
+    FileReader fileFrag("../test_triangle/shader.frag");
     Shader *shader  = new Shader((char *)fileVert.data(), (char *)fileFrag.data());
     if (!shader->isInitOk()) {
         std::cout << "init failed" << std::endl;

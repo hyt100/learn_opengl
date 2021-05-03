@@ -1,6 +1,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include <string.h>
 #include "Shader.h"
 
 static unsigned int LoadShader(GLenum type, const char *shaderSource)
@@ -38,6 +39,13 @@ static unsigned int LoadShader(GLenum type, const char *shaderSource)
 Shader::Shader(const char *vertexShaderSource, const char *fragmentShaderSource)
     :isInitOk_(false), programObject_(0)
 {
+    if (!vertexShaderSource || !fragmentShaderSource) {
+        return;
+    }
+    if (strlen(vertexShaderSource) == 0 || strlen(fragmentShaderSource) == 0) {
+        return;
+    }
+
     // load shaders
     unsigned int vertexShader = LoadShader(GL_VERTEX_SHADER, vertexShaderSource);
     if (0 == vertexShader) {

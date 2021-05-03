@@ -16,4 +16,5 @@ include_directories(src/)
 
 add_subdirectory(glad)
 add_subdirectory(src)
-add_subdirectory(test)
+add_subdirectory(test_triangle)
+add_subdirectory(test_rectangle)
