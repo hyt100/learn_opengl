@@ -12,6 +12,8 @@ link_directories(3rd-party/glfw-3.3.4.bin.MACOS/lib-x86_64)
 
 include_directories(glad/include/)
 
+include_directories(src/)
+
 add_subdirectory(glad)
 add_subdirectory(src)
 add_subdirectory(test)
