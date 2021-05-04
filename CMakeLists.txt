@@ -11,6 +11,7 @@ include_directories(3rd-party/glfw-3.3.4.bin.MACOS/include)
 link_directories(3rd-party/glfw-3.3.4.bin.MACOS/lib-x86_64)
 
 include_directories(3rd-party/stb_image)
+include_directories(3rd-party/glm)
 
 include_directories(glad/include/)
 
