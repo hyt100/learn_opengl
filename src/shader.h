@@ -10,6 +10,7 @@ public:
 
     bool isInitOk() { return isInitOk_; }
     void use();
+    unsigned int getProgram() { return programObject_; }
 
 private:
     bool isInitOk_;

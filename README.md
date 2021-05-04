@@ -6,6 +6,8 @@ test_rectangle: 绘制矩形
 
 test_ball：绘制球体
 
+test_rotate: 绘制矩形纹理，随时间改变自动旋转
+
 test_rgb: 渲染RGB图
 
 test_yuv: 渲染YUV420P图
