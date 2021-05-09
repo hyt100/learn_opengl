@@ -19,7 +19,7 @@ public:
     int draw();
 
 private:
-    Program *prog_;
+    ShaderUtil::Program *prog_;
     unsigned int VAO_;
     unsigned int VBO_;
     unsigned int EBO_;

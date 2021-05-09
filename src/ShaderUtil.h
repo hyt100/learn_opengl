@@ -1,6 +1,9 @@
 #pragma once
 #include <string>
+#include <vector>
 #include "FileReader.h"
+
+namespace ShaderUtil {
 
 class Program
 {
@@ -27,3 +30,22 @@ private:
     bool isInitOk_;
     unsigned int programObject_;  //handle to a progream object
 };
+
+class VAO
+{
+public:
+    VAO();
+    ~VAO();
+
+    // 属性有3个数据（例如，x/y/z）
+    void addVertex3(int location, float *data, int vertexCnt);
+
+    void bind();
+    void unbind();
+
+private:
+    unsigned int vao_;
+    std::vector<unsigned int> vboList_;
+};
+
+}

@@ -17,13 +17,12 @@ int Container::init()
     }
     FileReader fileVert("../test_rgb/shader.vert");
     FileReader fileFrag("../test_rgb/shader.frag");
-    Program *prog  = new Program(fileVert, fileFrag);
-    if (!prog->isInitOk()) {
+    prog_  = new ShaderUtil::Program(fileVert, fileFrag);
+    if (!prog_->isInitOk()) {
         std::cout << "init failed" << std::endl;
         stbi_image_free(data);
         return -1;
     }
-    prog_ = prog;
 
     float vertices[] = {
     //    ---- 位置 ----           - 纹理坐标 -
@@ -50,6 +49,7 @@ int Container::init()
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     //参数：属性编号, 属性的数据个数, 数据的类型, 步长, 起始位置的偏移量
+    //   (注意：因为EBO绑定到同一个，所有这里的两个location使用同一个VBO上的数据，他们使用偏移量来区分)
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));

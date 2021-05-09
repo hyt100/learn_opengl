@@ -7,12 +7,11 @@ int Rectangle::init()
 {
     FileReader fileVert("../test_rectangle/shader.vert");
     FileReader fileFrag("../test_rectangle/shader.frag");
-    Program *prog  = new Program(fileVert, fileFrag);
-    if (!prog->isInitOk()) {
+    prog_  = new ShaderUtil::Program(fileVert, fileFrag);
+    if (!prog_->isInitOk()) {
         std::cout << "init failed" << std::endl;
         return -1;
     }
-    prog_ = prog;
 
     float vertices[] = {
         0.5f, 0.5f, 0.0f,   // 右上角

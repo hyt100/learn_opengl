@@ -7,12 +7,11 @@ int Triangle::init()
 {
     FileReader fileVert("../test_triangle/shader.vert");
     FileReader fileFrag("../test_triangle/shader.frag");
-    Program *prog  = new Program(fileVert, fileFrag);
-    if (!prog->isInitOk()) {
+    prog_  = new ShaderUtil::Program(fileVert, fileFrag);
+    if (!prog_->isInitOk()) {
         std::cout << "init failed" << std::endl;
         return -1;
     }
-    prog_ = prog;
 
     float vertices[] = {
         -0.5f, -0.5f, 0.0f,
@@ -29,6 +28,7 @@ int Triangle::init()
 
     //参数：属性编号, 属性的数据个数, 数据的类型, 步长, 起始位置的偏移量
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    //参数：属性编号
     glEnableVertexAttribArray(0);
 
     glBindVertexArray(0); //解绑

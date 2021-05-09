@@ -4,7 +4,10 @@
 #include <string.h>
 #include "ShaderUtil.h"
 
-static unsigned int LoadShader(GLenum type, const char *shaderSource)
+using namespace ShaderUtil;
+
+namespace {
+unsigned int LoadShader(GLenum type, const char *shaderSource)
 {
     // create the shader object
     unsigned int shader = glCreateShader(type);
@@ -34,6 +37,7 @@ static unsigned int LoadShader(GLenum type, const char *shaderSource)
     }
 
     return shader;
+}
 }
 
 Program::Program(const char *vertexShaderSource, const char *fragmentShaderSource)
@@ -117,4 +121,47 @@ void Program::use()
 void Program::unuse()
 {
     glUseProgram(0);
+}
+
+VAO::VAO()
+{
+    glGenVertexArrays(1, &vao_);
+}
+
+VAO::~VAO()
+{
+    for (auto x : vboList_) {
+        glDeleteBuffers(1, &x);
+    }
+
+    if (vao_ != 0) {
+        glDeleteVertexArrays(1, &vao_);
+    }
+}
+
+void VAO::addVertex3(int location, float *data, int vertexCnt)
+{
+    this->bind();
+
+    unsigned int vbo;
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, 3*sizeof(float)*vertexCnt, data, GL_STATIC_DRAW);
+
+    //参数：属性编号, 属性的数据个数, 数据的类型, 步长, 起始位置的偏移量
+    // (注意：因为这个vbo绑定后，只有一个location在使用，所以这里偏移量只需设为0)
+    glVertexAttribPointer(location, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(location);
+
+    vboList_.push_back(vbo);
+}
+
+void VAO::bind()
+{
+    glBindVertexArray(vao_);
+}
+
+void VAO::unbind()
+{
+    glBindVertexArray(0);
 }
