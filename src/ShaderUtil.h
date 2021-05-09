@@ -54,4 +54,19 @@ private:
     std::vector<unsigned int> vboList_;
 };
 
+class Texture
+{
+public:
+    Texture();
+    ~Texture();
+
+    void bind();
+    void unbind();
+
+    void addRGB(uint8_t *data, int width, int height);
+
+private:
+    unsigned int texture_;
+};
+
 }

@@ -197,3 +197,42 @@ void VAO::draw(int vertexNum)
 
     this->unbind();
 }
+
+Texture::Texture()
+    :texture_(0)
+{
+    glGenTextures(1, &texture_);
+}
+
+Texture::~Texture()
+{
+    if (texture_ != 0) {
+        glDeleteTextures(1, &texture_);
+    }
+}
+
+void Texture::bind()
+{
+    glBindTexture(GL_TEXTURE_2D, texture_);
+}
+
+void Texture::unbind()
+{
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void Texture::addRGB(uint8_t *data, int width, int height)
+{
+    this->bind();
+
+    // 为当前绑定的纹理对象设置环绕、过滤方式
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // 加载并生成纹理
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+
+    this->unbind();
+}
