@@ -13,11 +13,11 @@ link_directories(3rd-party/glfw-3.3.4.bin.MACOS/lib-x86_64)
 include_directories(3rd-party/stb_image)
 include_directories(3rd-party/glm)
 
-include_directories(glad/include/)
+include_directories(3rd-party/glad/include/)
 
 include_directories(src/)
 
-add_subdirectory(glad)
+add_subdirectory(3rd-party/glad)
 add_subdirectory(src)
 add_subdirectory(test_triangle)
 add_subdirectory(test_rectangle)
