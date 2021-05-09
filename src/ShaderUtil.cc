@@ -124,6 +124,7 @@ void Program::unuse()
 }
 
 VAO::VAO()
+    : vao_(0), ebo_(0)
 {
     glGenVertexArrays(1, &vao_);
 }
@@ -134,9 +135,24 @@ VAO::~VAO()
         glDeleteBuffers(1, &x);
     }
 
+    if (ebo_ != 0) {
+        glDeleteBuffers(1, &ebo_);
+    }
+
     if (vao_ != 0) {
         glDeleteVertexArrays(1, &vao_);
     }
+}
+
+void VAO::setVertexIndex(unsigned int *index, int indexSize)
+{
+    this->bind();
+
+    glGenBuffers(1, &ebo_);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo_);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexSize, index, GL_STATIC_DRAW);
+
+    this->unbind();
 }
 
 void VAO::addVertex3(int location, float *data, int vertexCnt)
@@ -154,6 +170,7 @@ void VAO::addVertex3(int location, float *data, int vertexCnt)
     glEnableVertexAttribArray(location);
 
     vboList_.push_back(vbo);
+    this->unbind();
 }
 
 void VAO::bind()
@@ -164,4 +181,19 @@ void VAO::bind()
 void VAO::unbind()
 {
     glBindVertexArray(0);
+}
+
+void VAO::draw(int vertexNum)
+{
+    this->bind();
+
+    if (ebo_ != 0) {
+        //参数：图元类型, 绘制顶点的个数, 索引的类型, 指定EBO中的偏移量
+        glDrawElements(GL_TRIANGLES, vertexNum, GL_UNSIGNED_INT, 0);
+    } else {
+        //参数：图元类型, 顶点数组的起始索引, 绘制顶点的个数
+        glDrawArrays(GL_TRIANGLES, 0, vertexNum);
+    }
+
+    this->unbind();
 }

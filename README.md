@@ -1,7 +1,8 @@
 # Learn OpenGl
 
 > 运行环境：mac c++
-参考资料：https://learnopengl-cn.github.io
+
+> 参考资料：https://learnopengl-cn.github.io
 
 test_triangle: 绘制三角形
 

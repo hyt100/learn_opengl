@@ -37,14 +37,20 @@ public:
     VAO();
     ~VAO();
 
+    // 设置EBO顶点索引（如果设置了的话，渲染用glDrawElements；未设置的话，渲染用glDrawArrays）
+    void setVertexIndex(unsigned int *index, int indexSize);
+
     // 属性有3个数据（例如，x/y/z）
     void addVertex3(int location, float *data, int vertexCnt);
 
     void bind();
     void unbind();
 
+    void draw(int vertexNum); // vertexNum： 绘制顶点个数
+
 private:
     unsigned int vao_;
+    unsigned int ebo_;
     std::vector<unsigned int> vboList_;
 };
 
