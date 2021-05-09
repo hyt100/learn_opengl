@@ -2,7 +2,7 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <string.h>
-#include "Shader.h"
+#include "ShaderUtil.h"
 
 static unsigned int LoadShader(GLenum type, const char *shaderSource)
 {
@@ -36,15 +36,20 @@ static unsigned int LoadShader(GLenum type, const char *shaderSource)
     return shader;
 }
 
-Shader::Shader(const char *vertexShaderSource, const char *fragmentShaderSource)
-    :isInitOk_(false), programObject_(0)
+Program::Program(const char *vertexShaderSource, const char *fragmentShaderSource)
+    : isInitOk_(false), programObject_(0)
 {
     if (!vertexShaderSource || !fragmentShaderSource) {
+        std::cout << "null string pointer" << std::endl;
         return;
     }
     if (strlen(vertexShaderSource) == 0 || strlen(fragmentShaderSource) == 0) {
+        std::cout << "string length is 0" << std::endl;
         return;
     }
+
+    // std::cout << "vertex shader: " << vertexShaderSource << std::endl;
+    // std::cout << "frag shader: " << fragmentShaderSource << std::endl;
 
     // load shaders
     unsigned int vertexShader = LoadShader(GL_VERTEX_SHADER, vertexShaderSource);
@@ -94,22 +99,22 @@ Shader::Shader(const char *vertexShaderSource, const char *fragmentShaderSource)
 
     programObject_ = shaderProgram;
     isInitOk_ = true;
+    // std::cout << "init prog ok" << std::endl;
 }
 
-Shader::Shader(const std::string &vertexShaderSource, const std::string &fragmentShaderSource)
-    :isInitOk_(false), programObject_(0)
-{
-    Shader(vertexShaderSource.c_str(), fragmentShaderSource.c_str());
-}
-
-Shader::~Shader()
+Program::~Program()
 {
     if (programObject_) {
         glDeleteProgram(programObject_);
     }
 }
 
-void Shader::use()
+void Program::use()
 {
     glUseProgram(programObject_);
+}
+
+void Program::unuse()
+{
+    glUseProgram(0);
 }

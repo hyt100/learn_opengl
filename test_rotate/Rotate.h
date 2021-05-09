@@ -1,17 +1,17 @@
 #pragma once
-#include "Shader.h"
+#include "ShaderUtil.h"
 #include "FileReader.h"
 
 class Rotate
 {
 public:
     Rotate()
-        :shader_(nullptr)
+        :prog_(nullptr)
     {}
 
     ~Rotate()
     {
-        delete shader_;
+        delete prog_;
     }
 
     int init();
@@ -19,7 +19,7 @@ public:
     int draw();
 
 private:
-    Shader *shader_;
+    Program *prog_;
     unsigned int VAO_;
     unsigned int VBO_;
     unsigned int EBO_;

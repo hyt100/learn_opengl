@@ -43,6 +43,8 @@ public:
 
     uint8_t* data() { return data_; }
 
+    uint8_t* data() const { return data_; }
+
     bool is_error() { return error_; }
 
 private:

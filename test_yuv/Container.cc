@@ -21,12 +21,12 @@ int Container::init()
     
     FileReader fileVert("../test_rgb/shader.vert");
     FileReader fileFrag("../test_rgb/shader.frag");
-    Shader *shader  = new Shader((char *)fileVert.data(), (char *)fileFrag.data());
-    if (!shader->isInitOk()) {
+    Program *prog  = new Program(fileVert, fileFrag);
+    if (!prog->isInitOk()) {
         std::cout << "init failed" << std::endl;
         return -1;
     }
-    shader_ = shader;
+    prog_ = prog;
 
     float vertices[] = {
     //    ---- 位置 ----           - 纹理坐标 -
@@ -68,17 +68,18 @@ int Container::init()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // 加载并生成纹理
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 
     return 0;
 }
 
 int Container::draw()
 {
-    shader_->use();
+    prog_->use();
     glBindVertexArray(VAO_);
     glBindTexture(GL_TEXTURE_2D, texture_);
     //参数：图元类型, 绘制顶点的个数, 索引的类型, 指定EBO中的偏移量
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    prog_->unuse();
     return 0;
 }

@@ -7,12 +7,12 @@ int Rectangle::init()
 {
     FileReader fileVert("../test_rectangle/shader.vert");
     FileReader fileFrag("../test_rectangle/shader.frag");
-    Shader *shader  = new Shader((char *)fileVert.data(), (char *)fileFrag.data());
-    if (!shader->isInitOk()) {
+    Program *prog  = new Program(fileVert, fileFrag);
+    if (!prog->isInitOk()) {
         std::cout << "init failed" << std::endl;
         return -1;
     }
-    shader_ = shader;
+    prog_ = prog;
 
     float vertices[] = {
         0.5f, 0.5f, 0.0f,   // 右上角
@@ -47,9 +47,10 @@ int Rectangle::init()
 
 int Rectangle::draw()
 {
-    shader_->use();
+    prog_->use();
     glBindVertexArray(VAO_);
     //参数：图元类型, 绘制顶点的个数, 索引的类型, 指定EBO中的偏移量
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    prog_->unuse();
     return 0;
 }

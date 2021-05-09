@@ -7,12 +7,12 @@ int Triangle::init()
 {
     FileReader fileVert("../test_triangle/shader.vert");
     FileReader fileFrag("../test_triangle/shader.frag");
-    Shader *shader  = new Shader((char *)fileVert.data(), (char *)fileFrag.data());
-    if (!shader->isInitOk()) {
+    Program *prog  = new Program(fileVert, fileFrag);
+    if (!prog->isInitOk()) {
         std::cout << "init failed" << std::endl;
         return -1;
     }
-    shader_ = shader;
+    prog_ = prog;
 
     float vertices[] = {
         -0.5f, -0.5f, 0.0f,
@@ -37,9 +37,10 @@ int Triangle::init()
 
 int Triangle::draw()
 {
-    shader_->use();
+    prog_->use();
     glBindVertexArray(VAO_);
     //参数：图元类型, 顶点数组的起始索引, 绘制顶点的个数
     glDrawArrays(GL_TRIANGLES, 0, 3);
+    prog_->unuse();
     return 0;
 }
