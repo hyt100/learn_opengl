@@ -123,6 +123,13 @@ void Program::unuse()
     glUseProgram(0);
 }
 
+ShaderUtil::Program* ShaderUtil::CreateProgramFromFile(const char *vertexShaderFile, const char *fragmentShaderFile)
+{
+    FileReader fileVert(vertexShaderFile);
+    FileReader fileFrag(fragmentShaderFile);
+    return new ShaderUtil::Program(fileVert, fileFrag);
+}
+
 VAO::VAO()
     : vao_(0), ebo_(0)
 {
@@ -144,13 +151,13 @@ VAO::~VAO()
     }
 }
 
-void VAO::setVertexIndex(unsigned int *index, int indexSize)
+void VAO::setVertexIndex(unsigned int *index, int indexCnt)
 {
     this->bind();
 
     glGenBuffers(1, &ebo_);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo_);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexSize, index, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexCnt * sizeof(unsigned int), index, GL_STATIC_DRAW);
 
     this->unbind();
 }
@@ -235,4 +242,25 @@ void Texture::addRGB(uint8_t *data, int width, int height)
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 
     this->unbind();
+}
+
+GLenum ShaderUtil::CheckError(const char *file, int line)
+{
+    GLenum errorCode;
+    while ((errorCode = glGetError()) != GL_NO_ERROR)
+    {
+        std::string error;
+        switch (errorCode)
+        {
+            case GL_INVALID_ENUM:                  error = "INVALID_ENUM"; break;
+            case GL_INVALID_VALUE:                 error = "INVALID_VALUE"; break;
+            case GL_INVALID_OPERATION:             error = "INVALID_OPERATION"; break;
+            // case GL_STACK_OVERFLOW:                error = "STACK_OVERFLOW"; break;
+            // case GL_STACK_UNDERFLOW:               error = "STACK_UNDERFLOW"; break;
+            case GL_OUT_OF_MEMORY:                 error = "OUT_OF_MEMORY"; break;
+            case GL_INVALID_FRAMEBUFFER_OPERATION: error = "INVALID_FRAMEBUFFER_OPERATION"; break;
+        }
+        std::cout << error << " | " << file << " (" << line << ")" << std::endl;
+    }
+    return errorCode;
 }

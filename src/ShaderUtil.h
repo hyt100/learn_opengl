@@ -31,6 +31,9 @@ private:
     unsigned int programObject_;  //handle to a progream object
 };
 
+Program* CreateProgramFromFile(const char *vertexShaderFile, const char *fragmentShaderFile);
+GLenum CheckError(const char *file, int line);
+
 class VAO
 {
 public:
@@ -70,3 +73,5 @@ private:
 };
 
 }
+
+#define ShaderUtilCheckError() ShaderUtil::CheckError(__FILE__, __LINE__) 
