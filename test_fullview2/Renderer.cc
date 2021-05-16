@@ -143,7 +143,7 @@ int Renderer::draw()
     glm::mat4 mvp; //初始化为一个单位矩阵
 
     glm::mat4 model;
-    // model = glm::translate(model, glm::vec3(10.0f, 10.0f, 10.0f));
+    model = glm::translate(model, glm::vec3(10.0f, 30.0f, 50.0f)); //物体从原点开始平移一段距离
 
     glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), 
            glm::vec3(0.0f, 0.0f, -1.0f), 
@@ -152,7 +152,8 @@ int Renderer::draw()
     float rotateX = cos(2.0 * M_PI * yaw_ / 360);
     view = glm::rotate(view, (float)glm::radians((float)yaw_), glm::vec3(0.0f, 1.0f, 0.0f));
     view = glm::rotate(view, (float)glm::radians((float)pitch_), glm::vec3(rotateX,  0.0f, rotateZ));
-    // view = glm::translate(view, glm::vec3(10.0f, 10.0f, 10.0f));
+    //摄像机也要平移相同距离，保持在球体中心 （注意：摄像机位移向量的x/y/z值必须添加一个负号，反方向移动）
+    view = glm::translate(view, glm::vec3(-10.0f, -30.0f, -50.0f)); 
 
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), 16 / 9.0f, 0.1f, 100.0f);
 
