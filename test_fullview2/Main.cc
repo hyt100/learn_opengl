@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <iostream>
 #include "Renderer.h"
+#include "Rotate.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -53,6 +54,11 @@ int main()
         glfwTerminate();
         return -1;
     }
+    Rotate rotate;
+    if (rotate.init() != 0) {
+        glfwTerminate();
+        return -1;
+    }
 
     // render loop
     // -----------
@@ -68,7 +74,14 @@ int main()
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glEnable(GL_DEPTH_TEST);
+        // glDepthFunc(GL_LESS);
+        glDepthFunc(GL_ALWAYS);
+        glDisable(GL_BLEND);
+
         render.setRotate(pitch, yaw);
+        rotate.setRotate(pitch, yaw);
+        
+        rotate.draw();
         render.draw();
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)

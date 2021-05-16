@@ -2,37 +2,58 @@
 #include <GLFW/glfw3.h>
 #include "Rotate.h"
 #include <iostream>
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include "Image.h"
+
+static const char *vertStr = R"(
+#version 330 core
+layout (location = 0) in vec3 aPos;
+layout (location = 1) in vec2 aTexCoord;
+
+out vec2 TexCoord;
+
+uniform mat4 transform;
+
+void main()
+{
+  gl_Position = transform * vec4(aPos.x, aPos.y, aPos.z, 1.0);
+  TexCoord = aTexCoord;
+}
+)";
+
+static const char *fragStr = R"(
+#version 330 core
+out vec4 FragColor;
+in vec2 TexCoord;
+
+uniform sampler2D ourTexture;
+
+void main()
+{
+    FragColor = texture(ourTexture, TexCoord); 
+    FragColor.w = 1.0;
+}
+)";
 
 int Rotate::init()
 {
-    int width, height, nrChannels;
-    unsigned char *data = stbi_load("../res/lena_512x512.jpg", &width, &height, &nrChannels, 0);
-    if (!data) {
-        std::cout << "Failed to load texture" << std::endl;
+    Image image("../res/lena_512x512.jpg");
+    if (image.isError())
         return -1;
-    } else {
-        std::cout << "load texture ok (" << width << "x" << height << "  " << nrChannels << ")" << std::endl;
-    }
-    FileReader fileVert("../test_rotate/shader.vert");
-    FileReader fileFrag("../test_rotate/shader.frag");
-    prog_  = new ShaderUtil::Program(fileVert, fileFrag);
+    prog_  = new ShaderUtil::Program(vertStr, fragStr);
     if (!prog_->isInitOk()) {
         std::cout << "init prog failed" << std::endl;
-        stbi_image_free(data);
         return -1;
     }
 
     float vertices[] = {
     //    ---- 位置 ----           - 纹理坐标 -
-        0.5f,  0.5f, 0.0f,     1.0f, 0.0f,   // 右上角
-        0.5f, -0.5f, 0.0f,     1.0f, 1.0f,   // 右下角
-        -0.5f, -0.5f, 0.0f,    0.0f, 1.0f,   // 左下角
-        -0.5f,  0.5f, 0.0f,    0.0f, 0.0f    // 左上角
+        0.5f,  0.5f, -1.0f,     1.0f, 0.0f,   // 右上角
+        0.5f, -0.5f, -1.0f,     1.0f, 1.0f,   // 右下角
+        -0.5f, -0.5f, -1.0f,    0.0f, 1.0f,   // 左下角
+        -0.5f,  0.5f, -1.0f,    0.0f, 0.0f    // 左上角
     };
 
     unsigned int indices[] = { // 注意索引从0开始! 
@@ -68,32 +89,40 @@ int Rotate::init()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // 加载并生成纹理
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.getWidth(), image.getHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, image.getData());
 
-    stbi_image_free(data);
+    return 0;
+}
+
+int Rotate::setRotate(float pitch, float yaw)
+{
+    pitch_ = pitch;
+    yaw_ = yaw;
     return 0;
 }
 
 int Rotate::draw()
 {
-    // glm::mat4 trans; //初始化为一个单位矩阵
-    // // 绕Z轴旋转，使用GLFW的时间函数来获取不同时间的角度（GLM使用弧度制，可以使用glm::radians将角度转化为弧度）
-    // trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
-
-    glm::mat4 projection;
-    projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f), 16 / 9.0f, 0.1f, 100.0f);
 
     glm::mat4 mvp; //初始化为一个单位矩阵
 
     glm::mat4 model;
-    model = glm::translate(model, glm::vec3(1.0f, 1.0f, 0.0f));
+    // model = glm::translate(model, glm::vec3(-10.0f, -30.0f, -50.0f)); 
 
     glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), 
            glm::vec3(0.0f, 0.0f, -1.0f), 
            glm::vec3(0.0f, 1.0f, 0.0f));
-    view = glm::translate(view, glm::vec3(-1.0f, -1.0f, -2.0f));
+    float rotateZ = sin(2.0 * M_PI * yaw_ / 360);
+    float rotateX = cos(2.0 * M_PI * yaw_ / 360);
+    view = glm::rotate(view, (float)glm::radians((float)yaw_), glm::vec3(0.0f, 1.0f, 0.0f));
+    view = glm::rotate(view, (float)glm::radians((float)pitch_), glm::vec3(rotateX,  0.0f, rotateZ));
+    // view = glm::translate(view, glm::vec3(-10.0f, -30.0f, -50.0f)); 
     
     mvp = projection * view * model;
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     prog_->use();
     unsigned int transformLoc = glGetUniformLocation(prog_->getProgram(), "transform");

@@ -3,15 +3,14 @@
 #include "Renderer.h"
 #include <iostream>
 #include <cmath>
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include "Image.h"
 
 void Renderer::generateSphere()
 {
-    float ballRadius = 0.5;    // 球体半径
+    float ballRadius = 8;    // 球体半径
     int layerNum = 80;       // 水平切割层数
     int perLayerNum = 80;    // 每层分割的份数
     float thetaNum  = M_PI / layerNum;
@@ -75,18 +74,12 @@ void Renderer::generateSphere()
 
 int Renderer::init()
 {
-    int width, height, nrChannels;
-    uint8_t *data = stbi_load("../res/fullview.jpg", &width, &height, &nrChannels, 0);
-    if (!data) {
-        std::cout << "Failed to load texture" << std::endl;
+    Image image("../res/fullview.jpg");
+    if (image.isError())
         return -1;
-    } else {
-        std::cout << "load texture ok (" << width << "x" << height << "  " << nrChannels << ")" << std::endl;
-    }
     prog_  = ShaderUtil::CreateProgramFromFile("../test_fullview/shader.vert", "../test_fullview/shader.frag");
     if (!prog_->isInitOk()) {
         std::cout << "init prog failed" << std::endl;
-        stbi_image_free(data);
         return -1;
     }
     generateSphere();
@@ -124,10 +117,9 @@ int Renderer::init()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // 加载并生成纹理
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.getWidth(), image.getHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, image.getData());
     glBindTexture(GL_TEXTURE_2D, 0); //解绑
 
-    stbi_image_free(data);
     return 0;
 }
 
@@ -143,7 +135,7 @@ int Renderer::draw()
     glm::mat4 mvp; //初始化为一个单位矩阵
 
     glm::mat4 model;
-    model = glm::translate(model, glm::vec3(10.0f, 30.0f, 50.0f)); //物体从原点开始平移一段距离
+    // model = glm::translate(model, glm::vec3(10.0f, 30.0f, 50.0f)); //物体从原点开始平移一段距离
 
     glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), 
            glm::vec3(0.0f, 0.0f, -1.0f), 
@@ -153,7 +145,7 @@ int Renderer::draw()
     view = glm::rotate(view, (float)glm::radians((float)yaw_), glm::vec3(0.0f, 1.0f, 0.0f));
     view = glm::rotate(view, (float)glm::radians((float)pitch_), glm::vec3(rotateX,  0.0f, rotateZ));
     //摄像机也要平移相同距离，保持在球体中心 （注意：摄像机位移向量的x/y/z值必须添加一个负号，反方向移动）
-    view = glm::translate(view, glm::vec3(-10.0f, -30.0f, -50.0f)); 
+    // view = glm::translate(view, glm::vec3(-10.0f, -30.0f, -50.0f)); 
 
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), 16 / 9.0f, 0.1f, 100.0f);
 
