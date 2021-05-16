@@ -240,6 +240,7 @@ void Texture::addRGB(uint8_t *data, int width, int height)
     // 加载并生成纹理
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 0);
 
     this->unbind();
 }
