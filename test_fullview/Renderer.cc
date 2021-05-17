@@ -9,13 +9,14 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+// 由上而下构建球体（右手坐标系，Y轴正方向为上，Y轴负方向为下）
 void Renderer::generateSphere()
 {
-    float ballRadius = 0.5;    // 球体半径
-    int layerNum = 80;       // 水平切割层数
-    int perLayerNum = 80;    // 每层分割的份数
-    float thetaNum  = M_PI / layerNum;
-    float gamaNum = 2*M_PI / perLayerNum;
+    float ballRadius = 0.5;  // 球体半径(局部坐标系下长度不限制在-1~+1)
+    int layerNum = 80;       // 水平切割层数，水平切割得到若干个圆周
+    int perLayerNum = 80;    // 每层圆周的分割份数
+    float thetaNum  = M_PI / layerNum; //theta为球体上当前位置向量与+Y轴的夹角，取值0-180
+    float gamaNum = 2*M_PI / perLayerNum; //gama为圆周上当前位置向量与+Z轴的逆时针方向夹角，取值0-360
     float textureDeltaX = 1.0 / perLayerNum;
     float textureDeltaY = 1.0 / layerNum;
 
@@ -27,7 +28,7 @@ void Renderer::generateSphere()
         float theta =  thetaNum * i;
         float layerRaduis = ballRadius * sin(theta);
         y = ballRadius * cos(theta);
-        textureY = textureDeltaY * i;
+        textureY = textureDeltaY * i; //因为球体从上往下构建，这里纹理取值由下往上，所以已经翻转了一次，不需要再处理Y翻转
 
         for (int j = 0; j <= perLayerNum; ++j) {
             float gama = gamaNum * j;
@@ -38,16 +39,21 @@ void Renderer::generateSphere()
             vertices_.push_back(y);
             vertices_.push_back(z);
 
-            textureX = 1 - textureDeltaX * j;
+            textureX = 1 - textureDeltaX * j; //因为球体内部观看到的图被“水平镜像”了，所以需要翻转X
             vertices_.push_back(textureX);
             vertices_.push_back(textureY);
         }
     }
 
     //生成顶点索引
-    //      D-------A
-    //      |       |
-    //      C-------B
+    //   从球体外部看
+    //         A-------D
+    //         |       |
+    //         B-------C
+    //   从球体内部看
+    //         D-------A
+    //         |       |
+    //         C-------B
     int pointPerLayerNum  = layerNum + 1;
     for (int i = 0; i < layerNum; ++i) {
         for (int j = 0; j < perLayerNum; ++j) {

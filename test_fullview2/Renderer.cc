@@ -11,7 +11,7 @@
 // 由上而下构建球体（右手坐标系，Y轴正方向为上，Y轴负方向为下）
 void Renderer::generateSphere()
 {
-    float ballRadius = 4;    // 球体半径
+    float ballRadius = 4;    // 球体半径(局部坐标系下长度不限制在-1~+1)
     int layerNum = 80;       // 水平切割层数，水平切割得到若干个圆周
     int perLayerNum = 80;    // 每层圆周的分割份数
     float thetaNum  = M_PI / layerNum;    //theta为球体上当前位置向量与+Y轴的夹角，取值0-180
