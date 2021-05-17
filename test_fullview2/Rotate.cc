@@ -33,7 +33,6 @@ uniform sampler2D ourTexture;
 void main()
 {
     FragColor = texture(ourTexture, TexCoord); 
-    FragColor.w = 1.0;
 }
 )";
 
@@ -50,15 +49,15 @@ int Rotate::init()
 
     float vertices[] = {
     //    ---- 位置 ----           - 纹理坐标 -
-        0.5f,  0.5f, -1.0f,     1.0f, 0.0f,   // 右上角
-        0.5f, -0.5f, -1.0f,     1.0f, 1.0f,   // 右下角
-        -0.5f, -0.5f, -1.0f,    0.0f, 1.0f,   // 左下角
-        -0.5f,  0.5f, -1.0f,    0.0f, 0.0f    // 左上角
+        0.5f,  0.5f, -2.0f,     1.0f, 0.0f,   // 右上角
+        0.5f, -0.5f, -2.0f,     1.0f, 1.0f,   // 右下角
+        -0.5f, -0.5f, -2.0f,    0.0f, 1.0f,   // 左下角
+        -0.5f,  0.5f, -2.0f,    0.0f, 0.0f    // 左上角
     };
 
-    unsigned int indices[] = { // 注意索引从0开始! 
-        0, 1, 3, // 第一个三角形
-        1, 2, 3  // 第二个三角形
+    unsigned int indices[] = { // 注意要用逆时针方向，和renderer的球体保持一致，否则面剔除开启后会被剔除掉
+        0, 3, 1, // 第一个三角形
+        3, 2, 1  // 第二个三角形
     };
 
     glGenVertexArrays(1, &VAO_);
@@ -108,7 +107,7 @@ int Rotate::draw()
     glm::mat4 mvp; //初始化为一个单位矩阵
 
     glm::mat4 model;
-    // model = glm::translate(model, glm::vec3(-10.0f, -30.0f, -50.0f)); 
+    model = glm::translate(model, glm::vec3(10.0f, 30.0f, 50.0f)); 
 
     glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), 
            glm::vec3(0.0f, 0.0f, -1.0f), 
@@ -117,12 +116,12 @@ int Rotate::draw()
     float rotateX = cos(2.0 * M_PI * yaw_ / 360);
     view = glm::rotate(view, (float)glm::radians((float)yaw_), glm::vec3(0.0f, 1.0f, 0.0f));
     view = glm::rotate(view, (float)glm::radians((float)pitch_), glm::vec3(rotateX,  0.0f, rotateZ));
-    // view = glm::translate(view, glm::vec3(-10.0f, -30.0f, -50.0f)); 
+    view = glm::translate(view, glm::vec3(-10.0f, -30.0f, -50.0f));  //注意相机移动方向和模型矩阵是反的
     
     mvp = projection * view * model;
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    // glEnable(GL_BLEND);
+    // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     prog_->use();
     unsigned int transformLoc = glGetUniformLocation(prog_->getProgram(), "transform");
