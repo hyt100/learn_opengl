@@ -2,28 +2,19 @@
 #include <GLFW/glfw3.h>
 #include "Rotate.h"
 #include <iostream>
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include "Image.h"
 
 int Rotate::init()
 {
-    int width, height, nrChannels;
-    unsigned char *data = stbi_load("../res/lena_512x512.jpg", &width, &height, &nrChannels, 0);
-    if (!data) {
-        std::cout << "Failed to load texture" << std::endl;
+    Image image("../res/lena_512x512.jpg");
+    if (image.isError())
         return -1;
-    } else {
-        std::cout << "load texture ok (" << width << "x" << height << "  " << nrChannels << ")" << std::endl;
-    }
-    FileReader fileVert("../test_rotate/shader.vert");
-    FileReader fileFrag("../test_rotate/shader.frag");
-    prog_  = new ShaderUtil::Program(fileVert, fileFrag);
+    prog_ = ShaderUtil::CreateProgramFromFile("../test_rotate/shader.vert", "../test_rotate/shader.frag");
     if (!prog_->isInitOk()) {
         std::cout << "init prog failed" << std::endl;
-        stbi_image_free(data);
         return -1;
     }
 
@@ -68,9 +59,8 @@ int Rotate::init()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // 加载并生成纹理
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.getWidth(), image.getHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, image.getData());
 
-    stbi_image_free(data);
     return 0;
 }
 
