@@ -8,19 +8,9 @@
 
 
 int Container::init()
-{
-    int width = 512, height = 512;
-    FileReader fileYuv("../res/lena_512x512.yuv");
-    if (fileYuv.is_error()) {
-        std::cout << "load yuv failed" << std::endl;
-        return -1;
-    }
-    uint8_t *y = fileYuv.data();
-    uint8_t *u = y + width*height;
-    uint8_t *v = y + width*height + width*height/4;
-    
-    FileReader fileVert("../test_rgb/shader.vert");
-    FileReader fileFrag("../test_rgb/shader.frag");
+{   
+    FileReader fileVert("../test_yuv/shader.vert");
+    FileReader fileFrag("../test_yuv/shader.frag");
     prog_  = new ShaderUtil::Program(fileVert, fileFrag);
     if (!prog_->isInitOk()) {
         std::cout << "init failed" << std::endl;
@@ -29,15 +19,15 @@ int Container::init()
 
     float vertices[] = {
     //    ---- 位置 ----           - 纹理坐标 -
-        0.5f,  0.5f, 0.0f,     1.0f, 1.0f,   // 右上角
-        0.5f, -0.5f, 0.0f,     1.0f, 0.0f,   // 右下角
-        -0.5f, -0.5f, 0.0f,    0.0f, 0.0f,   // 左下角
-        -0.5f,  0.5f, 0.0f,    0.0f, 1.0f    // 左上角
+        0.5f,  0.5f, 0.0f,     1.0f, 0.0f,   // 右上角
+        0.5f, -0.5f, 0.0f,     1.0f, 1.0f,   // 右下角
+        -0.5f, -0.5f, 0.0f,    0.0f, 1.0f,   // 左下角
+        -0.5f,  0.5f, 0.0f,    0.0f, 0.0f    // 左上角
     };
 
     unsigned int indices[] = { // 注意索引从0开始! 
-        0, 1, 3, // 第一个三角形
-        1, 2, 3  // 第二个三角形
+        0, 3, 1, // 第一个三角形
+        3, 2, 1  // 第二个三角形
     };
 
     glGenVertexArrays(1, &VAO_);
@@ -60,24 +50,57 @@ int Container::init()
 
     glBindVertexArray(0); //解绑
 
-    glGenTextures(1, &texture_);
-    glBindTexture(GL_TEXTURE_2D, texture_);
-    // 为当前绑定的纹理对象设置环绕、过滤方式
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    // 加载并生成纹理
-    // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    glGenTextures(3, texture_);
+    for (int i = 0; i < 3; ++i) {
+        glBindTexture(GL_TEXTURE_2D, texture_[i]);
+        // 为当前绑定的纹理对象设置环绕、过滤方式
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    }
+    glBindTexture(GL_TEXTURE_2D, 0); //解绑
+    
+    uniformLocation_texture_[0] = glGetUniformLocation(prog_->getProgram(), "dataY");
+    uniformLocation_texture_[1] = glGetUniformLocation(prog_->getProgram(), "dataU");
+    uniformLocation_texture_[2] = glGetUniformLocation(prog_->getProgram(), "dataV");
 
     return 0;
 }
 
 int Container::draw()
 {
+    int width = 512, height = 512;
+    FileReader fileYuv("../res/lena_512x512.yuv");
+    if (fileYuv.is_error()) {
+        std::cout << "load yuv failed" << std::endl;
+        return -1;
+    }
+    uint8_t *y = fileYuv.data();
+    uint8_t *u = y + width*height;
+    uint8_t *v = y + width*height + width*height/4;
+
     prog_->use();
+
+    // 加载纹理Y
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture_[0]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, y);
+    glUniform1i(uniformLocation_texture_[0], 0);
+
+    // 加载纹理U
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, texture_[1]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, width/2, height/2, 0, GL_RED, GL_UNSIGNED_BYTE, u);
+    glUniform1i(uniformLocation_texture_[1], 1);
+
+    // 加载纹理V
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, texture_[2]);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, width/2, height/2, 0, GL_RED, GL_UNSIGNED_BYTE, v);
+    glUniform1i(uniformLocation_texture_[2], 2);
+
     glBindVertexArray(VAO_);
-    glBindTexture(GL_TEXTURE_2D, texture_);
     //参数：图元类型, 绘制顶点的个数, 索引的类型, 指定EBO中的偏移量
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     prog_->unuse();

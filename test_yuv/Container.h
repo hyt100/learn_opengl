@@ -23,5 +23,6 @@ private:
     unsigned int VAO_;
     unsigned int VBO_;
     unsigned int EBO_;
-    unsigned int texture_;
+    unsigned int texture_[3];
+    GLint uniformLocation_texture_[3];
 };
