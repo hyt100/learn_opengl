@@ -22,7 +22,7 @@ test_fullview: 全景图
 
 test_fullview2: 在给定位置观察全景图，球体内含一张图片
 
-test_xxx: 天空盒
+test_skybox: 天空盒
 
-test_compute: 采用opengl做通用计算
+test_compute: 采用opengl做通用计算（compute shader）
 
