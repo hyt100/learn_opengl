@@ -2,14 +2,16 @@
 #include <cmath>
 #include "ViewRenderer.h"
 
-static const char *mesh_vertStr = R"(
+namespace {
+const char *mesh_vertStr = R"(
 #version 330 core
 in vec3 aPos;
 uniform mat4 aMvp;
 
 void main()
 {
-  gl_Position = aMvp * vec4(aPos, 1.0);
+//   gl_Position = aMvp * vec4(aPos, 1.0);
+  gl_Position = vec4(aPos, 1.0);
 }
 )";
 
@@ -19,7 +21,8 @@ out vec4 FragColor;
 
 void main()
 {
-    FragColor = vec4(0.44, 0.5, 0.56, 1.0); 
+    // FragColor = vec4(0.44, 0.5, 0.56, 1.0); 
+    FragColor = vec4(1.0, 0.0, 0.0, 0.0); 
 }
 )";
 
@@ -34,6 +37,7 @@ out vec3 Color;
 void main()
 {
   gl_Position = aMvp * vec4(aPos, 1.0);
+//   gl_Position = vec4(aPos, 1.0);
   Color = aColor;
 }
 )";
@@ -48,6 +52,8 @@ void main()
     FragColor = vec4(Color, 1.0); 
 }
 )";
+
+} //namespace
 
 int ViewRenderer::axis_init()
 {
@@ -99,6 +105,8 @@ int ViewRenderer::axis_init()
     glEnableVertexAttribArray(axis_attrLocation_aColor_);
 
     glBindVertexArray(0); //解绑
+
+    ShaderUtilCheckError();
     return 0;
 }
 
@@ -109,10 +117,12 @@ int ViewRenderer::axis_draw(glm::mat4 &mvp)
     glUniformMatrix4fv(axis_uniformLocation_mvp_, 1, GL_FALSE, glm::value_ptr(mvp));
 
     //参数：图元类型, 绘制顶点的个数, 索引的类型, 指定EBO中的偏移量
-    glDrawElements(GL_LINE, 6, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_LINES, 6, GL_UNSIGNED_INT, 0);
 
     axis_prog_->unuse();
     glBindVertexArray(0); //解绑
+
+    ShaderUtilCheckError();
     return 0;
 }
 
@@ -122,7 +132,7 @@ void ViewRenderer::mesh_generate()
     float step = 1.0f;
 
     // vertices
-    for (float v = 0.0f; v <= max; v += step) {
+    for (float v = step; v <= max; v += step) {
         mesh_vertices_.push_back(v);
         mesh_vertices_.push_back(0.0f);
         mesh_vertices_.push_back(0.0f);
@@ -135,7 +145,7 @@ void ViewRenderer::mesh_generate()
         mesh_vertices_.push_back(0.0f);
         mesh_vertices_.push_back(max);
     }
-    for (float v = 0.0f; v <= max; v += step) {
+    for (float v = step; v <= max; v += step) {
         mesh_vertices_.push_back(0.0f);
         mesh_vertices_.push_back(v);
         mesh_vertices_.push_back(0.0f);
@@ -148,7 +158,7 @@ void ViewRenderer::mesh_generate()
         mesh_vertices_.push_back(v);
         mesh_vertices_.push_back(max);
     }
-    for (float v = 0.0f; v <= max; v += step) {
+    for (float v = step; v <= max; v += step) {
         mesh_vertices_.push_back(0.0f);
         mesh_vertices_.push_back(0.0f);
         mesh_vertices_.push_back(v);
@@ -163,7 +173,7 @@ void ViewRenderer::mesh_generate()
     }
 
     // indices
-    for (int i = 0; i < mesh_vertices_.size(); i += 3) {
+    for (int i = 0; i < mesh_vertices_.size()/3; i += 3) {
         mesh_indices_.push_back(i);
         mesh_indices_.push_back(i+1);
         mesh_indices_.push_back(i);
@@ -191,7 +201,7 @@ int ViewRenderer::mesh_init()
 
     glGenBuffers(1, &mesh_ebo_);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh_ebo_);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * mesh_vertices_.size(), mesh_indices_.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * mesh_indices_.size(), mesh_indices_.data(), GL_STATIC_DRAW);
 
     //参数：属性编号, 属性的数据个数, 数据的类型, 步长, 起始位置的偏移量
     //   (注意：因为EBO绑定到同一个，所有这里的两个location使用同一个VBO上的数据，他们使用偏移量来区分)
@@ -199,6 +209,7 @@ int ViewRenderer::mesh_init()
     glEnableVertexAttribArray(mesh_attrLocation_aPos_);
 
     glBindVertexArray(0); //解绑
+    ShaderUtilCheckError();
     return 0;
 }
 
@@ -209,10 +220,12 @@ int ViewRenderer::mesh_draw(glm::mat4 &mvp)
     glUniformMatrix4fv(mesh_uniformLocation_mvp_, 1, GL_FALSE, glm::value_ptr(mvp));
 
     //参数：图元类型, 绘制顶点的个数, 索引的类型, 指定EBO中的偏移量
-    glDrawElements(GL_LINE, mesh_indices_.size(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_LINES, mesh_indices_.size(), GL_UNSIGNED_INT, 0);
 
     mesh_prog_->unuse();
     glBindVertexArray(0); //解绑
+
+    ShaderUtilCheckError();
     return 0;
 }
 

@@ -60,7 +60,7 @@ void ViewMat::zoom_out()
 
 void ViewMat::up()
 {
-    theta_ -= 5.0f;
+    theta_ -= 3.0f;
     if (theta_ < 0.0f)
         theta_ = 0.0f;
     compute_view();
@@ -68,7 +68,7 @@ void ViewMat::up()
 
 void ViewMat::down()
 {
-    theta_ += 5.0f;
+    theta_ += 3.0f;
     if (theta_ > 180.0f)
         theta_ = 180.0f;
     compute_view();
@@ -76,7 +76,7 @@ void ViewMat::down()
 
 void ViewMat::left()
 {
-    gama_ -= 5.0f;
+    gama_ -= 3.0f;
     if (gama_ < 0.0f)
         gama_ += 360.0f;
     compute_view();
@@ -84,7 +84,7 @@ void ViewMat::left()
 
 void ViewMat::right()
 {
-    gama_ += 5.0f;
+    gama_ += 3.0f;
     if (gama_ > 360.0f)
         gama_ -= 360.0f;
     compute_view();
