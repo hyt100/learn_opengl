@@ -1,5 +1,6 @@
 #include "PointRenderer.h"
 #include <iostream>
+#include <stdio.h>
 
 static const char *vertStr = R"(
 #version 330 core
@@ -12,7 +13,7 @@ out vec3 Color;
 void main()
 {
   gl_Position = aMvp * vec4(aPos, 1.0);
-  gl_PointSize = 8.0；
+  gl_PointSize = 8.0;
   Color = aColor;
 }
 )";
@@ -24,7 +25,7 @@ out vec4 FragColor;
 
 void main()
 {
-    FragColor = texture(Color, 1.0); 
+    FragColor = vec4(Color, 1.0); 
 }
 )";
 
@@ -76,6 +77,19 @@ int PointRenderer::draw(glm::mat4 &projection, glm::mat4 &view)
     prog_->use();
     glUniformMatrix4fv(uniformLocation_mvp_, 1, GL_FALSE, glm::value_ptr(mvp));
     glBindVertexArray(vao_);
+
+    // 允许程序设置点的大小
+    glEnable(GL_PROGRAM_POINT_SIZE);
+
+    // 查询点大小的范围和步长
+    float sizes[2] = {0.0f, 0.0f};
+    float step = 1.0f;
+    glGetFloatv(GL_POINT_SIZE_RANGE, sizes);
+    glGetFloatv(GL_POINT_SIZE_GRANULARITY, &step);
+    // printf("range: %f %f   step: %f \n", sizes[0], sizes[1], step);
+
+    // 设置点的大小，也可以通过着色器内建变量gl_PointSize来设置（这里便是这样）
+    // glPointSize(4.0f);
 
     //参数：图元类型, 顶点数组的起始索引, 绘制顶点的个数
     glDrawArrays(GL_POINTS, 0, point_num_);
