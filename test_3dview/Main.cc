@@ -77,7 +77,7 @@ int main()
         glfwSwapBuffers(window);
         glfwPollEvents();
 
-        usleep(100*1000);
+        // usleep(100*1000);
     }
 
     // glfw: terminate, clearing all previously allocated GLFW resources.

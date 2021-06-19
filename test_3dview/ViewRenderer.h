@@ -27,6 +27,7 @@ public:
 
 private:
     void mesh_generate();
+    // void mesh_generate2();
     int mesh_init();
     int mesh_draw(glm::mat4 &mvp);
 

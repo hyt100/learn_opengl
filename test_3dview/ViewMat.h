@@ -27,8 +27,8 @@ private:
 
     float fov_;
     float R_Min_;
-    float R_Max_;
     float R_;     // 由上而下构建球体（右手坐标系，Y轴正方向为上，Y轴负方向为下）
+    float R_Max_;
     float theta_; // theta为球体上当前位置向量与+Y轴的夹角，取值0-180
     float gama_;  // gama为圆周上当前位置向量与+Z轴的逆时针方向夹角，取值0-360
 

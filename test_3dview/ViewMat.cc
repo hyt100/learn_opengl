@@ -1,5 +1,14 @@
 #include "ViewMat.h"
 
+ViewMat::ViewMat(int viewWidth, int viewHeight)
+    :fov_(45.0f), 
+    R_Min_(20.0f), R_(30.0f), R_Max_(40.0f),
+    theta_(45.0f), gama_(45.0f)
+{
+    projection_ = glm::perspective(glm::radians(fov_), 1.0f * viewWidth / viewHeight, 0.1f, 100.0f);
+    compute_view();
+}
+
 void ViewMat::compute_view()
 {
     //计算相机位置
@@ -20,16 +29,6 @@ void ViewMat::compute_view()
     glm::vec3 up = glm::normalize(glm::vec3(up_x, up_y, up_z));
 
     view_ = glm::lookAt(glm::vec3(pos_x, pos_y, pos_z), glm::vec3(0.0f, 0.0f, 0.0f), up);
-}
-
-ViewMat::ViewMat(int viewWidth, int viewHeight)
-    :fov_(45.0f), 
-    R_Min_(15.0f), R_Max_(40.0f), R_(20.0f), 
-    theta_(45.0f), gama_(45.0f)
-{
-    projection_ = glm::perspective(glm::radians(fov_), 1.0f * viewWidth / viewHeight, 0.1f, 100.0f);
-
-    compute_view();
 }
 
 glm::mat4 &ViewMat::getProjectionMat()

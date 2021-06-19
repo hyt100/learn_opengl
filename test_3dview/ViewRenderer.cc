@@ -10,8 +10,8 @@ uniform mat4 aMvp;
 
 void main()
 {
-//   gl_Position = aMvp * vec4(aPos, 1.0);
-  gl_Position = vec4(aPos, 1.0);
+  gl_Position = aMvp * vec4(aPos, 1.0);
+//   gl_Position = vec4(aPos, 1.0);
 }
 )";
 
@@ -21,8 +21,8 @@ out vec4 FragColor;
 
 void main()
 {
-    // FragColor = vec4(0.44, 0.5, 0.56, 1.0); 
-    FragColor = vec4(1.0, 0.0, 0.0, 0.0); 
+    FragColor = vec4(0.44, 0.5, 0.56, 1.0); 
+    // FragColor = vec4(1.0, 0.0, 0.0, 1.0); 
 }
 )";
 
@@ -188,6 +188,7 @@ int ViewRenderer::mesh_init()
         std::cout << "init mesh-prog failed" << std::endl;
         return -1;
     }
+    mesh_generate();
 
     mesh_attrLocation_aPos_ = glGetAttribLocation(mesh_prog_->getProgram(), "aPos");
     mesh_uniformLocation_mvp_ = glGetUniformLocation(mesh_prog_->getProgram(), "aMvp");
