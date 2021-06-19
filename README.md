@@ -24,5 +24,9 @@ test_fullview2: 在给定位置观察全景图，球体内含一张图片
 
 test_skybox: 天空盒
 
+test_3dview: 三维坐标轴
+
+test_offscreen: 离屏渲染
+
 test_compute: 采用opengl做通用计算（compute shader）
 
