@@ -8,8 +8,10 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
 
 // settings
-const unsigned int SCR_WIDTH = 512;
-const unsigned int SCR_HEIGHT = 512;
+const int windown_width = 512;
+const int windown_height = 512;
+int view_width;
+int view_height;
 
 int main()
 {
@@ -26,7 +28,7 @@ int main()
 
     // glfw window creation
     // --------------------
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(windown_width, windown_height, "LearnOpenGL", NULL, NULL);
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -35,6 +37,7 @@ int main()
     }
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwGetFramebufferSize(window, &view_width, &view_height); //获取渲染缓冲区大小
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------
@@ -66,7 +69,7 @@ int main()
 
         // render
         // ------
-        glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+        glViewport(0, 0, view_width, view_height);
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         // glEnable(GL_DEPTH_TEST);
@@ -105,5 +108,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     // make sure the viewport matches the new window dimensions; note that width and
     // height will be significantly larger than specified on retina displays.
     std::cout << "window size changed: " << width << "x" << height << std::endl; 
-    glViewport(0, 0, width, height);
+    view_width = width;
+    view_height = height;
+    glViewport(0, 0, view_width, view_height);
 }
