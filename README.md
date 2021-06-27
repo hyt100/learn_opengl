@@ -2,6 +2,14 @@
 
 > 运行环境：mac c++
 
+> 依赖库： 
+
+glm-0.9.8
+
+glfw-3.3.4 for mac
+
+glad（在线生成）
+
 > 参考资料：https://learnopengl-cn.github.io
 
 test_triangle: 绘制三角形
