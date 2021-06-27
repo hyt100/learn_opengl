@@ -4,11 +4,11 @@
 
 > 依赖库： 
 
-glm-0.9.8
+> glm-0.9.8
 
-glfw-3.3.4 for mac
+> glfw-3.3.4 for mac
 
-glad（在线生成）
+> glad（在线生成）
 
 > 参考资料：https://learnopengl-cn.github.io
 
