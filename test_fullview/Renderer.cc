@@ -140,17 +140,16 @@ int Renderer::draw()
 {
     glm::mat4 mvp; //初始化为一个单位矩阵
 
-    glm::mat4 model;
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f), 16 / 9.0f, 0.1f, 100.0f);
 
     glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), 
            glm::vec3(0.0f, 0.0f, -1.0f), 
            glm::vec3(0.0f, 1.0f, 0.0f));
-    float rotateZ = sin(2.0 * M_PI * yaw_ / 360);
-    float rotateX = cos(2.0 * M_PI * yaw_ / 360);
-    view = glm::rotate(view, (float)glm::radians((float)yaw_), glm::vec3(0.0f, 1.0f, 0.0f));
-    view = glm::rotate(view, (float)glm::radians((float)pitch_), glm::vec3(rotateX,  0.0f, rotateZ));
 
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), 16 / 9.0f, 0.1f, 100.0f);
+    // 相机的位置是固定的，改变的是model矩阵，旋转的时候需要确保画面移动的时候是沿着球体竖直的经线方向，所以旋转矩阵必须这么写:
+    glm::mat4 ry = glm::rotate(glm::mat4(), (float)glm::radians((float)yaw_), glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::mat4 rx = glm::rotate(glm::mat4(), (float)glm::radians((float)pitch_), glm::vec3(1.0f, 0.0f, 0.0f));
+    glm::mat4 model = rx * ry;    
 
     mvp = projection * view * model;
 
