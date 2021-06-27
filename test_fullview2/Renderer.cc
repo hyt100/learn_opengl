@@ -144,9 +144,9 @@ int Renderer::draw()
 
     glm::mat4 projection = glm::perspective(glm::radians(45.0f), 16 / 9.0f, 0.1f, 100.0f);
 
-    //摄像机存在平移距离，为了保持摄像机在球体中心，model必须反向移动
-    glm::mat4 view = glm::lookAt(glm::vec3(-10.0f, -30.0f, -50.0f), 
-           glm::vec3(0.0f, 0.0f, -1.0f), 
+    //摄像机存在平移距离，为了保持摄像机在球体中心，model必须移动到相机位置
+    glm::mat4 view = glm::lookAt(glm::vec3(10.0f, 30.0f, 50.0f), 
+           glm::vec3(0.0f + 10.0f, 0.0f + 30.0f, -1.0f + 50.0f), 
            glm::vec3(0.0f, 1.0f, 0.0f));
 
     // 相机的位置是固定的，改变的是model矩阵，旋转的时候需要确保画面移动的时候是沿着球体竖直的经线方向，所以旋转矩阵必须这么写:

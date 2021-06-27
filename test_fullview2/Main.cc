@@ -9,8 +9,8 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
 
 // settings
-const int windown_width = 1024;
-const int windown_height = 1024;
+const int windown_width = 512;
+const int windown_height = 512;
 int view_width;
 int view_height;
 
