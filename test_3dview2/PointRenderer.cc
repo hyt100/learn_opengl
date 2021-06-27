@@ -39,8 +39,8 @@ int PointRenderer::init()
 
     float vertices[] = {
     //    ---- 位置 ----       ----- 颜色 ----
-        +3.0f, +3.0f, +3.0f,   1.0f, 0.0f, 0.0f,
-        +3.0f, +3.0f, -3.0f,   0.0f, 1.0f, 0.0f,
+        +3.0f, +0.0f, +0.0f,   1.0f, 0.0f, 0.0f,
+        // +3.0f, +3.0f, -3.0f,   0.0f, 1.0f, 0.0f,
     };
     point_num_ = sizeof(vertices) / sizeof(vertices[0]) / 6;
 
@@ -71,6 +71,14 @@ int PointRenderer::init()
 int PointRenderer::draw(glm::mat4 &projection, glm::mat4 &view)
 {
     glm::mat4 model = glm::mat4(1.0f);
+
+    glm::mat4 translate = glm::translate(glm::mat4(1.0f), glm::vec3(2.0f, 0.0f, 2.0f));
+    glm::mat4 rotate = glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
+    // glm::mat4 r1 = glm::rotate(glm::mat4(1.0f), glm::radians(-45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    // glm::mat4 r2 = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+
+    model = translate * rotate * model;
     
     glm::mat4 mvp = projection * view * model;
 
