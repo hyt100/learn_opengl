@@ -60,11 +60,18 @@ int PhotoRenderer::init(Image *image)
     return 0;
 }
 
-int PhotoRenderer::draw(ViewMat *viewMat)
+int PhotoRenderer::draw(ModelPose &pose)
 {
-    glm::mat4 view = viewMat->getViewMat();
-    glm::mat4 projection = viewMat->getProjectionMat();
-    glm::mat4 mvp = projection * view;
+    glm::mat4 model = glm::mat4(1.0f);
+    glm::mat4 r_pitch = glm::rotate(glm::mat4(1.0f), glm::radians(pose.pitch), glm::vec3(1.0, 0, 0));
+    glm::mat4 r_yaw = glm::rotate(glm::mat4(1.0f), glm::radians(pose.yaw), glm::vec3(0, 1.0, 0));
+    glm::mat4 r_roll = glm::rotate(glm::mat4(1.0f), glm::radians(pose.roll), glm::vec3(0, 0, 1.0));
+    // glm::mat4 trans = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, pose.trans));
+    model = r_pitch * r_yaw * r_roll;
+
+    glm::mat4 view = glm::lookAt(glm::vec3(0, 0, 1.0), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::mat4 projection = glm::perspective((float)glm::radians(pose.fov), 1.0f * image_->getWidth() / image_->getHeight(), 0.1f, 100.0f);
+    glm::mat4 mvp = projection * view * model;
 
     prog_->use();
     glBindVertexArray(VAO_);

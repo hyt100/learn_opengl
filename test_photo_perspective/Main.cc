@@ -2,7 +2,7 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include "Renderer.h"
-#include "ViewMat.h"
+// #include "ViewMat.h"
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -13,7 +13,8 @@ const int windown_width = 512;
 const int windown_height = 512;
 int view_width;
 int view_height;
-static ViewMat *viewMat;
+// static ViewMat *viewMat;
+static ModelPose pose;
 
 int main()
 {
@@ -59,7 +60,7 @@ int main()
         glfwTerminate();
         return -1;
     }
-    viewMat = new ViewMat(view_width, view_height);
+    // viewMat = new ViewMat(view_width, view_height);
 
     // render loop
     // -----------
@@ -74,7 +75,7 @@ int main()
         glViewport(0, 0, view_width, view_height);
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-        render.draw(viewMat);
+        render.draw(pose);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
@@ -85,7 +86,7 @@ int main()
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
     glfwTerminate();
-    delete viewMat;
+    // delete viewMat;
     return 0;
 }
 
@@ -96,17 +97,17 @@ void processInput(GLFWwindow *window)
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
     if(glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
-        viewMat->left();
+        pose.left();
     if(glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-        viewMat->right();
+        pose.right();
     if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-        viewMat->up();
+        pose.up();
     if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-        viewMat->down();
+        pose.down();
     if(glfwGetKey(window, GLFW_KEY_EQUAL) == GLFW_PRESS)
-        viewMat->zoom_in();
+        pose.zoom_in();
     if(glfwGetKey(window, GLFW_KEY_MINUS) == GLFW_PRESS)
-        viewMat->zoom_out();
+        pose.zoom_out();
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
