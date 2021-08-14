@@ -24,7 +24,8 @@ elseif (UNIX)
     #      sudo apt-get install libgl1-mesa-dev
     # Build glfw and Install:
     #      mkdir build;cmake ..;make & make install
-    list(APPEND ALL_LIBS glfw3 GL Xrandr Xi X11 Xxf86vm pthread dl Xinerama Xcursor)
+    # list(APPEND ALL_LIBS glfw3 GL Xrandr Xi X11 Xxf86vm pthread dl Xinerama Xcursor)
+    list(APPEND ALL_LIBS glfw3 GL Xrandr Xi X11 pthread dl)
 endif ()
 
 include_directories(3rd-party/stb_image)
