@@ -36,9 +36,9 @@ test_3dview: 三维坐标轴 + 网格线
 
 test_3dview2: 在三维坐标轴上，验证对点进行矩阵变换
 
-test_photo_perspective: 照片透视矫正
+test_photo_perspective: 照片透视矫正 (TODO)
 
-test_offscreen: 离屏渲染
+test_offscreen: 离屏渲染 (TODO)
 
-test_compute: 采用opengl做通用计算（compute shader）
+test_compute: 采用opengl做通用计算（compute shader） (TODO)
 

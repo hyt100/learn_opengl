@@ -7,6 +7,8 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
+
 message(STATUS "Operation system is ${CMAKE_SYSTEM}")
 
 set(ALL_LIBS glad mylib)
@@ -49,3 +51,4 @@ add_subdirectory(test_overlying)
 add_subdirectory(test_skybox)
 add_subdirectory(test_3dview)
 add_subdirectory(test_3dview2)
+add_subdirectory(test_photo_perspective)
