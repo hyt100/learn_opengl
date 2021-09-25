@@ -6,7 +6,7 @@
 #include "ColorRenderer.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void mouse_cursor_callback(GLFWwindow* window, double xpos, double ypos);
 void mouse_button_callback(GLFWwindow* windown, int button, int action, int mods);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow *window);
@@ -50,9 +50,9 @@ int main()
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwGetFramebufferSize(window, &view_width, &view_height); //获取渲染缓冲区大小
-    glfwSetCursorPosCallback(window, mouse_callback);
-    glfwSetScrollCallback(window, scroll_callback);
+    glfwSetCursorPosCallback(window, mouse_cursor_callback);
     glfwSetMouseButtonCallback(window, mouse_button_callback);
+    glfwSetScrollCallback(window, scroll_callback);
 
     // tell GLFW to capture our mouse (GLFW_CURSOR_DISABLED: 隐藏鼠标箭头)
     // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -131,7 +131,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 }
 
 // glfw: whenever the mouse moves, this callback is called
-void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+void mouse_cursor_callback(GLFWwindow* window, double xpos, double ypos)
 {
     mouse.UpdateMovePos(xpos, ypos);
     if (mouse_button_press)  //鼠标左键按下后，才处理鼠标移动
