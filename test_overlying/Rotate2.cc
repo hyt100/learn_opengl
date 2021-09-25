@@ -73,7 +73,7 @@ int Rotate2::draw()
     glm::mat4 projection;
     projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
 
-    glm::mat4 mvp; //初始化为一个单位矩阵
+    glm::mat4 mvp = glm::mat4(1.0f); //初始化为一个单位矩阵
 
     glm::mat4 model;
     model = glm::translate(model, glm::vec3(1.0f, 1.0f, 0.0f));

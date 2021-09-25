@@ -66,14 +66,14 @@ int Rotate::init()
 
 int Rotate::draw()
 {
-    // glm::mat4 trans; //初始化为一个单位矩阵
+    // glm::mat4 trans = glm::mat4(1.0f); //初始化为一个单位矩阵
     // // 绕Z轴旋转，使用GLFW的时间函数来获取不同时间的角度（GLM使用弧度制，可以使用glm::radians将角度转化为弧度）
     // trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
 
     glm::mat4 projection;
     projection = glm::perspective(glm::radians(45.0f), 1.0f, 0.1f, 100.0f);
 
-    glm::mat4 mvp; //初始化为一个单位矩阵
+    glm::mat4 mvp = glm::mat4(1.0f); //初始化为一个单位矩阵
 
     glm::mat4 model;
     model = glm::translate(model, glm::vec3(1.0f, 1.0f, 0.0f));
