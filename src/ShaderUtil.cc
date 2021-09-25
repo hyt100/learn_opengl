@@ -123,13 +123,6 @@ void Program::unuse()
     glUseProgram(0);
 }
 
-ShaderUtil::Program* ShaderUtil::CreateProgramFromFile(const char *vertexShaderFile, const char *fragmentShaderFile)
-{
-    FileReader fileVert(vertexShaderFile);
-    FileReader fileFrag(fragmentShaderFile);
-    return new ShaderUtil::Program(fileVert, fileFrag);
-}
-
 VAO::VAO()
     : vao_(0), ebo_(0)
 {

@@ -1,15 +1,17 @@
 # Learn OpenGl
 
-> 运行环境：mac c++
-
+> 运行环境：mac/ubuntu c++
+>
 > 依赖库： 
-
+>
 > glm-0.9.8
-
+>
 > glfw-3.3.4 for mac
-
+>
 > glad（在线生成）
-
+>
+> stb_image
+>
 > 参考资料：https://learnopengl-cn.github.io
 
 test_triangle: 绘制三角形
@@ -35,6 +37,8 @@ test_skybox: 天空盒
 test_3dview: 三维坐标轴 + 网格线
 
 test_3dview2: 在三维坐标轴上，验证对点进行矩阵变换
+
+test_color: 光照
 
 test_offscreen: 离屏渲染 (TODO)
 
