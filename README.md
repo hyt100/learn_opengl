@@ -4,13 +4,15 @@
 >
 > 依赖库： 
 >
-> glm-0.9.8
+> ​       窗口管理、OpenGL 上下文、输入控制  [glfw-3.3.4](https://www.glfw.org/)
 >
-> glfw-3.3.4 for mac
+> ​       OpenGL Loading Library  [glad](https://glad.dav1d.de/)（在线生成）
 >
-> glad（在线生成）
+> ​       数学计算 [glm-0.9.9.8](https://github.com/g-truc/glm)
 >
-> stb_image
+> ​       图片加载 [stb_image](https://github.com/nothings/stb)  or [SOIL](https://github.com/littlstar/soil)
+>
+> ​       模型加载 [assimp](https://github.com/assimp/assimp)
 >
 > 参考资料：https://learnopengl-cn.github.io
 
