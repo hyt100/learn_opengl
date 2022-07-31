@@ -47,32 +47,35 @@ int main()
         return -1;
     }
 
-    Triangle triangle;
-    if (triangle.init() != 0) {
-        glfwTerminate();
-        return -1;
-    }
-
-    // render loop
-    // -----------
-    while (!glfwWindowShouldClose(window))
     {
-        // input
-        // -----
-        processInput(window);
+        Triangle triangle;
+        if (triangle.init() != 0) {
+            glfwTerminate();
+            return -1;
+        }
 
-        // render
-        // ------
-        glViewport(0, 0, view_width, view_height);
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-        triangle.draw();
+        // render loop
+        // -----------
+        while (!glfwWindowShouldClose(window))
+        {
+            // input
+            // -----
+            processInput(window);
 
-        // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
-        // -------------------------------------------------------------------------------
-        glfwSwapBuffers(window);
-        glfwPollEvents();
-    }
+            // render
+            // ------
+            glViewport(0, 0, view_width, view_height);
+            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+            glClear(GL_COLOR_BUFFER_BIT);
+            triangle.draw();
+
+            // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
+            // -------------------------------------------------------------------------------
+            glfwSwapBuffers(window);
+            glfwPollEvents();
+        }
+
+    } // 这里加括号确保资源释放在glfwTerminate前执行，否则退出时会出现coredump
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------

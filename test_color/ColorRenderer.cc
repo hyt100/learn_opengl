@@ -109,7 +109,7 @@ int ColorRenderer::Draw(const glm::mat4 &projection, const glm::mat4 &view)
     model = glm::translate(glm::mat4(1.0f), lightPos);
     model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
     mvp = projection * view * model;
-    prog_object_->setMat4("mvp", mvp);
+    prog_light_->setMat4("mvp", mvp);
 
     glBindVertexArray(lightVAO_);
     glDrawArrays(GL_TRIANGLES, 0, 36);
